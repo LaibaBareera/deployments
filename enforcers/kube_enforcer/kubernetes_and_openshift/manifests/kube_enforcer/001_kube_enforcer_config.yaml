@@ -68,6 +68,10 @@ webhooks:
           - clusterroles
           - clusterrolebindings
           - customresourcedefinitions
+          - persistentvolumes
+          - persistentvolumeclaims
+          - ingresses
+          - networkpolicies
     clientConfig:
       # Please follow instruction in document to generate new CA cert
       caBundle:
@@ -134,7 +138,7 @@ metadata:
   name: aqua-kube-enforcer
 rules:
   - apiGroups: ["*"]
-    resources: ["pods", "nodes", "namespaces", "deployments", "jobs", "cronjobs", "daemonsets", "replicasets", "replicationcontrollers", "statefulsets", "clusterroles", "clusterrolebindings", "componentstatuses", "services" ]
+    resources: ["pods", "nodes", "namespaces", "deployments", "jobs", "cronjobs", "daemonsets", "replicasets", "replicationcontrollers", "statefulsets", "clusterroles", "clusterrolebindings", "componentstatuses", "services", "persistentvolumes", "persistentvolumeclaims", "ingresses", "networkpolicies", "customresourcedefinitions" ]
     verbs: ["get", "list", "watch"]
   - apiGroups: [ "" ]
     resources: [ "serviceaccounts"]
@@ -150,6 +154,12 @@ rules:
   - apiGroups: ["aquasecurity.github.io"]
     resources: ["configauditreports", "clusterconfigauditreports"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumes", "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "networking.k8s.io" ]
+    resources: [ "ingresses", "networkpolicies" ]
+    verbs: [ "get", "list", "watch" ]
 #### Please uncomment the below block if your platform is Openshift
 #  - apiGroups: ["*"]
 #    resources: ["pods","namespaces"]
@@ -1229,6 +1239,22 @@ rules:
       - rbac.authorization.k8s.io
     resources:
       - clusterrolebindings
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
     verbs:
       - get
       - list

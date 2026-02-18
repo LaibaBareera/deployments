@@ -68,6 +68,10 @@ webhooks:
           - clusterroles
           - clusterrolebindings
           - customresourcedefinitions
+          - persistentvolumes
+          - persistentvolumeclaims
+          - ingresses
+          - networkpolicies
     clientConfig:
       # Please follow instruction in document to generate new CA cert
       caBundle:
@@ -124,7 +128,7 @@ metadata:
   name: aqua-kube-enforcer
 rules:
   - apiGroups: ["*"]
-    resources: ["pods", "nodes", "namespaces", "deployments", "jobs", "cronjobs", "daemonsets", "replicasets", "replicationcontrollers", "statefulsets", "clusterroles", "clusterrolebindings", "componentstatuses", "services" ]
+    resources: ["pods", "nodes", "namespaces", "deployments", "jobs", "cronjobs", "daemonsets", "replicasets", "replicationcontrollers", "statefulsets", "clusterroles", "clusterrolebindings", "componentstatuses", "services", "persistentvolumes", "persistentvolumeclaims", "ingresses", "networkpolicies", "customresourcedefinitions" ]
     verbs: ["get", "list", "watch"]
   - apiGroups: [ "" ]
     resources: [ "serviceaccounts"]
@@ -143,6 +147,12 @@ rules:
   - apiGroups: ["*"]
     resources: ["configmaps"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumes", "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "networking.k8s.io" ]
+    resources: [ "ingresses", "networkpolicies" ]
+    verbs: [ "get", "list", "watch" ]
   - apiGroups:
       - "*"
     resources:
@@ -1159,6 +1169,22 @@ rules:
       - list
       - patch
       - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - get
+      - list
       - watch
   - apiGroups:
       - aquasecurity.github.io
